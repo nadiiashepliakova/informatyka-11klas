@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Урок інформатики 10 клас: Середовище GitHub як безкоштовний хостинг</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --accent: #0ea5e9;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #16a34a;
+            --error: #dc2626;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+            overflow-wrap: break-word;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: clamp(12px, 3vw, 24px);
+        }
+
+        /* Стильна темна шапка з піктограмою */
+        header {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: #ffffff;
+            padding: clamp(24px, 4vw, 40px) clamp(15px, 3vw, 24px);
+            border-bottom: 4px solid var(--accent);
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        header .header-icon {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+        }
+
+        header h1 {
+            font-size: clamp(1.4rem, 3vw, 2.3rem);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        header p {
+            color: #cbd5e1;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            background: #ffffff;
+            padding: 8px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            font-size: clamp(0.9rem, 1.5vw, 1rem);
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            touch-action: manipulation;
+        }
+
+        .tab-btn:hover {
+            background: #f1f5f9;
+            color: var(--primary);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+        }
+
+        .tab-content {
+            display: none;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: clamp(16px, 3vw, 32px);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 40px;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+            color: var(--primary-dark);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        h3 {
+            font-size: clamp(1.05rem, 2vw, 1.25rem);
+            color: var(--text-main);
+            margin: 16px 0 8px 0;
+        }
+
+        p, ul, ol {
+            margin-bottom: 12px;
+            font-size: clamp(0.95rem, 1.5vw, 1.05rem);
+        }
+
+        ul, ol {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        /* Випадаючі списки (<details>) */
+        details.theory-section {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        details.theory-section[open] {
+            border-color: var(--accent);
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.1);
+        }
+
+        summary.theory-summary {
+            padding: 16px 20px;
+            font-weight: 600;
+            font-size: clamp(1.05rem, 1.8vw, 1.2rem);
+            color: var(--primary-dark);
+            cursor: pointer;
+            user-select: none;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.2s;
+        }
+
+        summary.theory-summary:hover {
+            background: #e2e8f0;
+        }
+
+        summary.theory-summary::after {
+            content: "▼";
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            transition: transform 0.2s;
+        }
+
+        details.theory-section[open] summary.theory-summary::after {
+            transform: rotate(180deg);
+        }
+
+        .theory-body {
+            padding: 20px;
+            background: #ffffff;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Симулятор */
+        .simulator-box {
+            background: #f1f5f9;
+            border: 2px dashed var(--accent);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .url-preview {
+            font-family: monospace;
+            background: #ffffff;
+            padding: 10px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            color: var(--primary);
+            font-weight: bold;
+            margin-top: 8px;
+            word-break: break-all;
+        }
+
+        /* Картки */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+
+        .card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .card h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+        }
+
+        /* Тести */
+        .question-card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .question-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            border-color: var(--primary);
+            background: #eff6ff;
+        }
+
+        .option-label input {
+            margin-top: 3px;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            display: block;
+        }
+
+        .test-controls {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            touch-action: manipulation;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        #test-results {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* Практика */
+        .code-box {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            position: relative;
+            margin: 12px 0;
+            white-space: pre-wrap;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #334155;
+            color: #ffffff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary);
+        }
+
+        .checklist {
+            list-style: none;
+            padding: 0;
+            margin: 16px 0;
+        }
+
+        .checklist li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .checklist input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .progress-container {
+            background: #e2e8f0;
+            border-radius: 99px;
+            height: 12px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+
+        .progress-bar {
+            background: var(--success);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="header-icon">🌐💻</div>
+            <h1>Середовище GitHub <br>як безкоштовний хостинг сайту</h1>
+            <p>Урок інформатики для 11 класу</p>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <!-- Навігація вкладок -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab(event, 'tab-theory')">📖 I. Теоретичний матеріал</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-test')">✍️ II. Запитання для самоперевірки</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-practice')">🛠️ ІІІ. Практичне завдання</button>
+        </div>
+
+        <!-- Вкладка 1: Теорія -->
+        <div id="tab-theory" class="tab-content active">
+            <h2>Теоретичні відомості</h2>
+            <p>Вивчіть матеріали уроку, розгортаючи відповідні розділи нижче:</p>
+
+            <!-- Розділ 1 -->
+            <details class="theory-section">
+                <summary class="theory-summary">🖥️ 1. Базові поняття: вебсервер, хостинг і домен</summary>
+                <div class="theory-body">
+                    <p>Щоб створений вами вебсайт був доступний в інтернеті для інших користувачів, недостатньо просто написати код на комп'ютері. Необхідні три ключові компоненти:</p>
+                    <ul>
+                        <li><strong>Вебсервер</strong> — це потужний комп'ютер, який працює цілодобово, підключений до мережі інтернет і видає сторінки за запитами користувачів.</li>
+                        <li><strong>Хостинг</strong> — послуга з надання дискового простору та ресурсів сервера для розміщення сайту.</li>
+                        <li><strong>Доменне ім'я</strong> — унікальна текстова адреса сайту (наприклад, <code>mysite.ua</code>), яка замінює складну IP-адресу сервера.</li>
+                    </ul>
+                    <p><em>Побутова аналогія:</em> Хостинг — це орендована квартира (місце, де все зберігається), а домен — це поштова адреса, за якою вас знаходять друзі.</p>
+                </div>
+            </details>
+
+            <!-- Розділ 2 -->
+            <details class="theory-section">
+                <summary class="theory-summary">🐙 2. Що таке Git та GitHub?</summary>
+                <div class="theory-body">
+                    <p><strong>Git</strong> — це розподілена система контролю версій. Вона дозволяє фіксувати зміни в коді, повертатися до попередніх версій та працювати над проєктами командно без ризику втратити дані.</p>
+                    <p><strong>GitHub</strong> — це найбільша вебплатформа для хостингу IT-проєктів та спільної розробки на базі Git. Вона забезпечує хмарне зберігання коду та надає інструмент <strong>GitHub Pages</strong> для безкоштовного хостингу статичних сайтів.</p>
+                </div>
+            </details>
+
+            <!-- Розділ 3 -->
+            <details class="theory-section">
+                <summary class="theory-summary">📂 3. Основні терміни GitHub</summary>
+                <div class="theory-body">
+                    <div class="grid-2">
+                        <div class="card">
+                            <h4>📦 Репозиторій (Repository)</h4>
+                            <p>Папка проєкту на GitHub, де зберігаються всі файли сайту, історія їхніх змін та налаштування.</p>
+                        </div>
+                        <div class="card">
+                            <h4>💾 Коміт (Commit)</h4>
+                            <p>Точка збереження стану файлів. Кожен коміт супроводжується коротким описом зроблених змін.</p>
+                        </div>
+                        <div class="card">
+                            <h4>🌿 Гілка (Branch)</h4>
+                            <p>Незалежна лінія розробки. Основна робоча гілка зазвичай називається <code>main</code> або <code>master</code>.</p>
+                        </div>
+                        <div class="card">
+                            <h4>🚀 Деплой (Deployment)</h4>
+                            <p>Процес публікації сайту на хостингу, після якого він стає доступним усім користувачам інтернету.</p>
+                        </div>
+                    </div>
+                </div>
+            </details>
+
+            <!-- Розділ 4 -->
+            <details class="theory-section">
+                <summary class="theory-summary">⚖️ 4. GitHub Pages: переваги та обмеження</summary>
+                <div class="theory-body">
+                    <p><strong>Переваги:</strong></p>
+                    <ul>
+                        <li>Повністю безкоштовно для публічних репозиторіїв.</li>
+                        <li>Надійність та висока швидкість завдяки серверам GitHub.</li>
+                        <li>Автоматичне підключення безкоштовного SSL-сертифіката (захищений протокол HTTPS).</li>
+                        <li>Миттєве оновлення сайту при кожному новому коміті.</li>
+                    </ul>
+                    <p><strong>Обмеження:</strong></p>
+                    <ul>
+                        <li>Підтримує лише <em>статичні</em> сайти (HTML, CSS, JavaScript). Динамічні мови (PHP, Python, Node.js на сервері) не працюють.</li>
+                        <li>Обмеження на обсяг репозиторію та трафік (до 100 ГБ на місяць для безкоштовних акаунтів).</li>
+                    </ul>
+                </div>
+            </details>
+
+            <!-- Розділ 5 -->
+            <details class="theory-section">
+                <summary class="theory-summary">🎯 5. Золоті правила публікації та симулятор URL</summary>
+                <div class="theory-body">
+                    <p><strong>Головні правила успішного деплою:</strong></p>
+                    <ol>
+                        <li>Головна сторінка сайту обов'язково повинна називатися <strong>index.html</strong> (у нижньому регістрі).</li>
+                        <li>Усі шляхи до зображень, стилів та скриптів мають бути <em>відносними</em> (наприклад, <code>images/photo.jpg</code>, а не повними шляхами з вашого диска).</li>
+                        <li>У налаштуваннях репозиторію (Settings &rarr; Pages) джерелом публікації (Source) потрібно обрати гілку <code>main</code> та теку <code>/root</code> (або <code>/ (root)</code>).</li>
+                    </ol>
+
+                    <div class="simulator-box">
+                        <h3>🔗 Інтерактивний симулятор адреси GitHub Pages</h3>
+                        <p>Введіть назву вашого GitHub-акаунта та назву репозиторію, щоб побачити, якою буде адреса вашого сайту:</p>
+                        <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+                            <input type="text" id="sim-user" placeholder="Ваш логін (напр. ivan-petrenko)" value="student" style="padding: 8px; border-radius: 6px; border: 1px solid var(--border);" oninput="updateSim()">
+                            <input type="text" id="sim-repo" placeholder="Назва репозиторію (напр. my-first-site)" value="portfolio" style="padding: 8px; border-radius: 6px; border: 1px solid var(--border);" oninput="updateSim()">
+                        </div>
+                        <div class="url-preview" id="sim-result">https://student.github.io/portfolio/</div>
+                    </div>
+                </div>
+            </details>
+
+        </div>
+
+        <!-- Вкладка 2: Тест -->
+        <div id="tab-test" class="tab-content">
+            <h2>Інтерактивний тест (12 запитань)</h2>
+            <p>Дайте відповіді на запитання на основі теоретичного матеріалу. Після завершення натисніть кнопку перевірки.</p>
+            
+            <form id="quiz-form">
+                <div id="questions-container"></div>
+                
+                <div class="test-controls">
+                    <button type="button" class="btn" onclick="checkTest()">Перевірити результати</button>
+                </div>
+            </form>
+            <div id="test-results"></div>
+        </div>
+
+        <!-- Вкладка 3: Практика -->
+        <div id="tab-practice" class="tab-content">
+            <h2>Практичне завдання: <br>Створення та публікація сайту</h2>
+            <p>Виконайте послідовні кроки для створення власної вебсторінки та розміщення її на GitHub Pages.</p>
+
+            <h3>Крок 1. Підготовка стартового файлу</h3>
+            <p>Створіть на комп'ютері файл з назвою <code>index.html</code> та скопіюйте до нього наступний шаблон:</p>
+            
+            <div class="code-box">
+                <button class="copy-btn" onclick="copyCode(this)">Копіювати</button>
+                <pre><code id="starter-code">&lt;!DOCTYPE html&gt;
+&lt;html lang="uk"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Мій перший сайт на GitHub Pages&lt;/title&gt;
+    &lt;style&gt;
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #e0f2fe; color: #0369a1; }
+        h1 { font-size: 2.5rem; }
+        p { font-size: 1.2rem; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Привіт, світ! 🚀&lt;/h1&gt;
+    &lt;p&gt;Мій сайт успішно опубліковано на GitHub Pages!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </div>
+
+            <h3>Крок 2. Чекліст виконання роботи</h3>
+            <p>Відмічайте виконані етапи для відстеження прогресу:</p>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+
+            <ul class="checklist">
+                <li><input type="checkbox" onchange="updateProgress()"> Зареєстровано обліковий запис на GitHub.</li>
+                <li><input type="checkbox" onchange="updateProgress()"> Створено новий публічний репозиторій (Public Repository).</li>
+                <li><input type="checkbox" onchange="updateProgress()"> Створено файл <code>index.html</code> з базовою HTML-розміткою.</li>
+                <li><input type="checkbox" onchange="updateProgress()"> Завантажено (закомічено) файл <code>index.html</code> у головну гілку репозиторію.</li>
+                <li><input type="checkbox" onchange="updateProgress()"> Увімкнено GitHub Pages у налаштуваннях репозиторію (Settings &rarr; Pages).</li>
+                <li><input type="checkbox" onchange="updateProgress()"> Перевірено роботу сайту за отриманою посиланням-адресою.</li>
+            </ul>
+
+            <h3>Критерії оцінювання практичної роботи:</h3>
+            <ul>
+                <li><strong>10–12 балів:</strong> Сайт успішно опубліковано, посилання працює, код містить власні модифікації та доповнення.</li>
+                <li><strong>7–9 балів:</strong> Сайт опубліковано за шаблоном, але допущено незначні огріхи у структуруванні файлів.</li>
+                <li><strong>4–6 балів:</strong> Репозиторій створено, але деплой не завершено або файл названо з помилкою.</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        function openTab(evt, tabId) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(c => c.classList.remove('active'));
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        function updateSim() {
+            let user = document.getElementById('sim-user').value.trim() || 'username';
+            let repo = document.getElementById('sim-repo').value.trim() || 'repository';
+            user = user.toLowerCase().replace(/[^a-z0-9-_]/g, '');
+            repo = repo.toLowerCase().replace(/[^a-z0-9-_]/g, '');
+            document.getElementById('sim-result').innerText = `https://${user}.github.io/${repo}/`;
+        }
+
+        function copyCode(btn) {
+            const codeText = document.getElementById('starter-code').innerText;
+            navigator.clipboard.writeText(codeText).then(() => {
+                btn.innerText = 'Скопійовано!';
+                setTimeout(() => { btn.innerText = 'Копіювати'; }, 2000);
+            });
+        }
+
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+            const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+            const percentage = (checkedCount / checkboxes.length) * 100;
+            document.getElementById('progress-bar').style.width = percentage + '%';
+        }
+
+        const questionsData = [
+            {
+                q: "1. Що таке вебсервер?",
+                options: [
+                    "Спеціальна програма для перегляду вебсторінок",
+                    "Комп'ютер, який зберігає файли сайту та видає їх за запитами",
+                    "Назва мови програмування для створення дизайну сайту",
+                    "Безкоштовний антивірус"
+                ],
+                correct: 1,
+                explanation: "Вебсервер — це апаратно-програмний комплекс або комп'ютер, що обслуговує запити браузерів."
+            },
+            {
+                q: "2. Що таке хостинг?",
+                options: [
+                    "Послуга надання дискового простору для розміщення сайту",
+                    "Унікальна адреса сайту в інтернеті",
+                    "Головний файл вебсторінки",
+                    "Розширення файлу стилів"
+                ],
+                correct: 0,
+                explanation: "Хостинг забезпечує зберігання сайту на сервері, доступному з інтернету 24/7."
+            },
+            {
+                q: "3. Що таке доменне ім'я?",
+                options: [
+                    "Пароль до адміністративної панелі сайту",
+                    "Текстова адреса вебсайту, зручна для запам'ятовування людиною",
+                    "Розмір файлу у мегабайтах",
+                    "Версія мови HTML"
+                ],
+                correct: 1,
+                explanation: "Доменне ім'я замінює складну чисельну IP-адресу сервера."
+            },
+            {
+                q: "4. Що таке Git?",
+                options: [
+                    "Розподілена система контролю версій коду",
+                    "Графічний редактор зображень",
+                    "Браузер для мобільних пристроїв",
+                    "Операційна система"
+                ],
+                correct: 0,
+                explanation: "Git дозволяє відстежувати зміни в коді та керувати історією проєкту."
+            },
+            {
+                q: "5. Що таке GitHub?",
+                options: [
+                    "Вебплатформа для хостингу IT-проєктів та спільної розробки на базі Git",
+                    "Пошукова система в інтернеті",
+                    "Антивірусна програма",
+                    "Конструктор сайтів без написання коду"
+                ],
+                correct: 0,
+                explanation: "GitHub — це хмарне сховище репозиторіїв та інструмент для спільної роботи."
+            },
+            {
+                q: "6. Що називається репозиторієм у Git?",
+                options: [
+                    "Будь-який файл на робочому столі",
+                    "Папка проєкту, де зберігаються всі файли та історія їхніх змін",
+                    "Спеціальна кнопка публікації",
+                    "Архівний файл формату .zip"
+                ],
+                correct: 1,
+                explanation: "Репозиторій — це спеціальна тека проєкту, якою управляє Git."
+            },
+            {
+                q: "7. Що таке коміт (commit)?",
+                options: [
+                    "Помилка у програмному коді",
+                    "Точка збереження стану файлів проєкту з описом змін",
+                    "Видалення сайту з сервера",
+                    "Перехід на нову сторінку"
+                ],
+                correct: 1,
+                explanation: "Коміт фіксує поточний стан репозиторію та додає його до історії."
+            },
+            {
+                q: "8. Що таке GitHub Pages?",
+                options: [
+                    "Інструмент для безкоштовного хостингу статичних сайтів безпосередньо з репозиторію GitHub",
+                    "Платна послуга реклами в соцмережах",
+                    "Документація до мови JavaScript",
+                    "Офіційний форум розробників"
+                ],
+                correct: 0,
+                explanation: "GitHub Pages дозволяє швидко та безкоштовно перетворити репозиторій на публічний сайт."
+            },
+            {
+                q: "9. Яка обов'язкова умова для коректного відображення головної сторінки на GitHub Pages?",
+                options: [
+                    "Файл повинен називатися обов'язково index.html",
+                    "Файл повинен мати назву main.php",
+                    "Код має бути написаний лише на Python",
+                    "Назва файлу не має значення"
+                ],
+                correct: 0,
+                explanation: "Сервер шукає файл index.html як точку входу за замовчуванням."
+            },
+            {
+                q: "10. Які сайти підтримує GitHub Pages у межах безкоштовного використання?",
+                options: [
+                    "Виключно статичні сайти (HTML, CSS, JS)",
+                    "Динамічні сайти з підтримкою баз даних MySQL та PHP",
+                    "Серверні додатки на NodeJS",
+                    "Будь-які складнорівневі портали"
+                ],
+                correct: 0,
+                explanation: "GitHub Pages розрахований лише на статичний фронтенд-контент."
+            },
+            {
+                q: "11. Який тип шляхів необхідно використовувати для підключення стилів та картинок у проєкті для GitHub Pages?",
+                options: [
+                    "Повні абсолютні шляхи з локального диску комп'ютера",
+                    "Відносні шляхи відносно кореня проєкту",
+                    "Шляхи через інтернет-протокол FTP",
+                    "Шляхи вказувати не потрібно"
+                ],
+                correct: 1,
+                explanation: "Відносні шляхи гарантують, що ресурси правильно завантажуватимуться на сервері."
+            },
+            {
+                q: "12. Що відбувається з сайтом на GitHub Pages після здійснення нового коміту в гілку деплою?",
+                options: [
+                    "Сайт автоматично оновлюється через деякий час",
+                    "Сайт видаляється",
+                    "Необхідно купувати новий домен",
+                    "Нічого не змінюється"
+                ],
+                correct: 0,
+                explanation: "GitHub Pages автоматично перебирає зміни та оновлює вебсторінку."
+            }
+        ];
+
+        function renderQuiz() {
+            const container = document.getElementById('questions-container');
+            let html = '';
+            questionsData.forEach((item, index) => {
+                html += `
+                    <div class="question-card">
+                        <div class="question-title">${item.q}</div>
+                        <div class="options-list">
+                `;
+                item.options.forEach((opt, optIndex) => {
+                    html += `
+                        <label class="option-label">
+                            <input type="radio" name="q${index}" value="${optIndex}">
+                            <span>${opt}</span>
+                        </label>
+                    `;
+                });
+                html += `
+                        </div>
+                        <div id="feedback-${index}" class="feedback"></div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function checkTest() {
+            let score = 0;
+            questionsData.forEach((item, index) => {
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                const feedbackEl = document.getElementById(`feedback-${index}`);
+                
+                if (selected) {
+                    const val = parseInt(selected.value);
+                    if (val === item.correct) {
+                        score++;
+                        feedbackEl.className = 'feedback correct';
+                        feedbackEl.innerText = '✓ Правильно! ' + item.explanation;
+                    } else {
+                        feedbackEl.className = 'feedback incorrect';
+                        feedbackEl.innerText = '✕ Помилка. ' + item.explanation;
+                    }
+                } else {
+                    feedbackEl.className = 'feedback incorrect';
+                    feedbackEl.innerText = '✕ Відповідь не обрано. ' + item.explanation;
+                }
+            });
+
+            const grade12 = Math.round((score / questionsData.length) * 12);
+            const resultsEl = document.getElementById('test-results');
+            resultsEl.innerHTML = `Ваш результат: ${score} з ${12} правильних відповідей. Оцінка за 12-бальною шкалою: <strong>${grade12} балів</strong>`;
+        }
+
+        window.onload = function() {
+            renderQuiz();
+        };
+    </script>
+</body>
+</html>
